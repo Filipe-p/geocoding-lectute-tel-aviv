@@ -1,10 +1,17 @@
 class FlatsController < ApplicationController
   before_action :set_flat, only: [:show, :edit, :update, :destroy]
 
-  # GET /flats
-  # GET /flats.json
   def index
-    @flats = Flat.all
+    @flats = Flat.where.not(latitude: nil, longitude: nil)
+
+    @markers = @flats.map do |flat|
+      {
+        lng: flat.longitude,
+        lat: flat.latitude,
+        infoWindow: render_to_string(partial: "infowindow", locals: { flat: flat }),
+        image_url: helpers.asset_url('falafel')
+      }
+    end
   end
 
   # GET /flats/1
